@@ -6,6 +6,7 @@ import Foundation
 
 
 @available(iOS 13.0.0, *)
+@available(macOS 12.0.0, *)
 public class RedEyeNetworkManager {
     public init() {}
     var baseURL = "https://api.redeyedms.com"
@@ -97,12 +98,12 @@ public class RedEyeNetworkManager {
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         
         request.httpMethod = "POST"
-//        request.httpBody = body
+        request.httpBody = body
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         
         let session = URLSession(configuration: .ephemeral)
-//        let (data, response) = try await session.data(for: request)
-        let (data, response) = try await session.upload(for: request, from: body)
+        let (data, response) = try await session.data(for: request)
+
         
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             do {
