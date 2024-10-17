@@ -29,6 +29,7 @@ public struct Metadata: Codable {
 }
 
 public struct Record: Identifiable {
+    public init(){}
     public var filepath: String = ""
     public var sha256: String = ""
     public var artefactType: String = ""
