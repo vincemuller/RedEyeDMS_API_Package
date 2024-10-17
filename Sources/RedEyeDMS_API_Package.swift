@@ -6,7 +6,7 @@ import Foundation
 
 
 @available(iOS 13.0.0, *)
-class RedEyeNetworkManager {
+public class RedEyeNetworkManager {
     var baseURL = "https://api.redeyedms.com"
     
     //Get request to retrieve list of all bucket groups

@@ -7,28 +7,28 @@
 
 import Foundation
 
-struct ErrorResponse: Codable {
+public struct ErrorResponse: Codable {
     var error: String
     var title: String
 }
 
-struct Errors: Codable, Identifiable {
-    var id = UUID()
+public struct Errors: Codable, Identifiable {
+    public var id = UUID()
     var errors: [ErrorResponse]
 }
 
-struct Group: Codable {
+public struct Group: Codable {
     var id: Int
     var name: String
 }
 
-struct BucketMetadata: Codable {
+public struct BucketMetadata: Codable {
     var description: String
     var id: Int
     var name: String
 }
 
-struct File: Identifiable {
+public struct File: Identifiable {
     var filepath: String = ""
     var sha256: String = ""
     var artefactType: String = ""
@@ -38,5 +38,5 @@ struct File: Identifiable {
     var drawingTitle: String = ""
     var metadata: [BucketMetadata] = []
     var manifestBatchID: UUID = UUID()
-    var id = UUID()
+    public var id = UUID()
 }
