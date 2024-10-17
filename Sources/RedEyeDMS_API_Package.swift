@@ -7,10 +7,11 @@ import Foundation
 
 @available(iOS 13.0.0, *)
 public class RedEyeNetworkManager {
+    public init() {}
     var baseURL = "https://api.redeyedms.com"
     
     //Get request to retrieve list of all bucket groups
-    func getGroups(apiToken: String) async throws -> [String] {
+    public func getGroups(apiToken: String) async throws -> [String] {
         var request = URLRequest(url: URL(string: "\(baseURL)/api/v1/groups")!,timeoutInterval: Double.infinity)
         
         request.addValue("Bearer \(apiToken)", forHTTPHeaderField: "Authorization")
@@ -49,7 +50,7 @@ public class RedEyeNetworkManager {
     }
     
     //Get request to retrive list of all bucket metadata field names and descriptions
-    func getMetadataFields(apiToken: String) async throws -> [String] {
+    public func getMetadataFields(apiToken: String) async throws -> [String] {
         var request = URLRequest(url: URL(string: "\(baseURL)/api/v1/metadata")!,timeoutInterval: Double.infinity)
         
         request.addValue("Bearer \(apiToken)", forHTTPHeaderField: "Authorization")
@@ -87,7 +88,7 @@ public class RedEyeNetworkManager {
         }
     }
 
-    func uploadNewFile(file: File, apiToken: String) async throws -> [String] {
+    public func uploadNewFile(file: File, apiToken: String) async throws -> [String] {
         let boundary = "Boundary-\(UUID().uuidString)"
         let body = buildBody(fileMetadata: file, boundary: boundary)
         
@@ -131,7 +132,7 @@ public class RedEyeNetworkManager {
         
     }
     
-    func buildBody(fileMetadata: File, boundary: String) -> Data {
+    public func buildBody(fileMetadata: File, boundary: String) -> Data {
         
         //Build parameters
         var parameter = [[
