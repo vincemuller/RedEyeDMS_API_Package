@@ -22,13 +22,13 @@ public struct Group: Codable {
     public var name: String
 }
 
-public struct BucketMetadata: Codable {
+public struct Metadata: Codable {
     public var description: String
     public var id: Int
     public var name: String
 }
 
-public struct File: Identifiable {
+public struct Record: Identifiable {
     public var filepath: String = ""
     public var sha256: String = ""
     public var artefactType: String = ""
@@ -36,7 +36,7 @@ public struct File: Identifiable {
     public var workflow: String = ""
     public var drawingNum: String = ""
     public var drawingTitle: String = ""
-    public var metadata: [BucketMetadata] = []
+    public var metadata: [Metadata] = []
     public var manifestBatchID: UUID = UUID()
     public var id = UUID()
 }

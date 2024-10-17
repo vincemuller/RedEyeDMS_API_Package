@@ -77,7 +77,7 @@ public class RedEyeNetworkManager {
         
         do {
             let decoder = JSONDecoder()
-            let d = try decoder.decode([BucketMetadata].self, from: data)
+            let d = try decoder.decode([Metadata].self, from: data)
             var array: [String] = []
             for x in d {
                 array.append(x.name)
@@ -88,7 +88,7 @@ public class RedEyeNetworkManager {
         }
     }
 
-    public func uploadNewFile(file: File, apiToken: String) async throws -> [String] {
+    public func uploadNewFile(file: Record, apiToken: String) async throws -> [String] {
         let boundary = "Boundary-\(UUID().uuidString)"
         let body = buildBody(fileMetadata: file, boundary: boundary)
         
@@ -120,7 +120,7 @@ public class RedEyeNetworkManager {
         do {
             let decoder = JSONDecoder()
             //Need to build model for artefact data and add this model to this decoder.decode
-            let d = try decoder.decode([BucketMetadata].self, from: data)
+            let d = try decoder.decode([Metadata].self, from: data)
             var array: [String] = []
             for x in d {
                 array.append(x.name)
@@ -132,7 +132,7 @@ public class RedEyeNetworkManager {
         
     }
     
-    public func buildBody(fileMetadata: File, boundary: String) -> Data {
+    public func buildBody(fileMetadata: Record, boundary: String) -> Data {
         
         //Build parameters
         var parameter = [[
