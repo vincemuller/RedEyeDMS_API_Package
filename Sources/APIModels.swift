@@ -18,6 +18,7 @@ public struct Errors: Codable, Identifiable {
 }
 
 public struct Group: Codable {
+    
     public var id: Int
     public var name: String
 }
@@ -29,7 +30,18 @@ public struct Metadata: Codable {
 }
 
 public struct Record: Identifiable {
-    public init(){}
+    public init(filepath: String, sha256: String, artefactType: String, targetGroup: String, workflow: String, drawingNum: String, drawingTitle: String, metadata: [Metadata], manifestBatchID: UUID, id: UUID = UUID()) {
+        self.filepath = filepath
+        self.sha256 = sha256
+        self.artefactType = artefactType
+        self.targetGroup = targetGroup
+        self.workflow = workflow
+        self.drawingNum = drawingNum
+        self.drawingTitle = drawingTitle
+        self.metadata = metadata
+        self.manifestBatchID = manifestBatchID
+        self.id = id
+    }
     public var filepath: String = ""
     public var sha256: String = ""
     public var artefactType: String = ""
