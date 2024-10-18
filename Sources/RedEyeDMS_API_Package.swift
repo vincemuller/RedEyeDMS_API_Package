@@ -124,10 +124,10 @@ public class RedEyeNetworkManager {
         do {
             let decoder = JSONDecoder()
             //Need to build model for artefact data and add this model to this decoder.decode
-            let d = try decoder.decode([Metadata].self, from: data)
+            let d = try decoder.decode(Errors.self, from: data)
             var array: [String] = []
-            for x in d {
-                array.append(x.name)
+            for x in d.errors {
+                array.append(x.error)
             }
             print(array)
             return array
