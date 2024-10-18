@@ -89,20 +89,19 @@ public class RedEyeNetworkManager {
         }
     }
     
-    
     func buildParameters(record: Record) -> [[String:Any]] {
         return [[
             "key": "file",
             "src": record.filepath,
             "type": "file"
         ],
-                [
-                    "key": "data",
-                    "value": "{\"type\": \"\(record.artefactType)\",\"artefactHash\": {\"md5\": \"\(record.sha256.lowercased())\",\"sha256\": \"\(record.sha256.lowercased())\"},\"fileHash\": \"\(record.sha256.lowercased())\",\"metadata\": [{\"name\": \"DRAWING_NUM\",\"value\": [\"\(record.filepath)\"]},{\"name\": \"targetGroup\",\"value\": [\"\(record.targetGroup)\"]}]}",
-                    "type": "text"
-                ]] as [[String: Any]]
+        [
+            "key": "data",
+            "value": "{\"type\": \"\(record.artefactType)\",\"artefactHash\": {\"md5\": \"\(record.sha256.lowercased())\",\"sha256\": \"\(record.sha256.lowercased())\"},\"fileHash\": \"\(record.sha256.lowercased())\",\"metadata\": [{\"name\": \"DRAWING_NUM\",\"value\": [\"\(record.filepath)\"]},{\"name\": \"targetGroup\",\"value\": [\"\(record.targetGroup)\"]}]}",
+            "type": "text"
+        ]] as [[String: Any]]
     }
-    
+
     func buildBody(parameter: [String: Any], b: Data, boundary: String) -> Data {
         var body = b
         let paramName = parameter["key"]! //Initial key read
@@ -132,8 +131,8 @@ public class RedEyeNetworkManager {
         }
         return body
     }
-    
-    public func uploadRequest(record: Record, apiToken: String) {
+
+    func uploadRequest(record: Record, apiToken: String) {
         
         let parameters = buildParameters(record: record)
         
@@ -156,72 +155,39 @@ public class RedEyeNetworkManager {
         
         request.httpMethod = "POST"
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-        //            request.httpBody = body
+        request.httpBody = body
         
-        //            sessionFunc(request: request, session: session, queue: operationQueue, count: count)
         let session = URLSession(configuration: .ephemeral)
+        sessionFunc(request: request, session: session)
         
-        sessionFunc2(request: request, body: body, session: session) { result in
-            switch result {
-            case .success(let data):
-                print("success!")
-            case .failure(let error):
-                print("Error: \(error)")
+        body = Data()
+        request.httpBody = nil
+    }
+
+    func sessionFunc(request: URLRequest, session: URLSession) {
+        var task = URLSessionTask()
+        
+        task = session.dataTask(with: request, completionHandler: { data, response, error in
+            if var response = response as? HTTPURLResponse {
+                print(response.statusCode)
+                response = HTTPURLResponse()
+                task.cancel()
+                session.invalidateAndCancel()
+            }
+            
+            let d2 = data
+            
+            do {
+                let decoder = JSONDecoder()
+                let d = try decoder.decode(Errors.self, from: d2 ?? Data())
+                print(d.errors)
+            } catch {
+                print("Data coding issue")
                 return
             }
-        }
-        body = Data()
+        })
+        task.resume()
     }
-}
-
-func sessionFunc2(request: URLRequest, body: Data, session: URLSession, completed: @escaping (Result<[Data], Error>) -> Void) {
-    var task = URLSessionTask()
-    
-    task = session.uploadTask(with: request, from: body) { data, response, error in
-        
-        if let error = error {
-            completed(.failure(error))
-            print("Session func : \(error.localizedDescription)")
-            return
-        }
-        
-        //        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-        //            let error = error
-        //            completed(.failure())
-        //            return
-        //        }
-        
-        if var response = response as? HTTPURLResponse {
-            print("Response: \(response.statusCode)")
-            
-            if response.statusCode == 200 {
-                successfullyUploaded += 1
-            }
-            
-            //            if count == 150 {
-            //                queue.signal()
-            //            }
-            //            task.cancel()
-            //            session.invalidateAndCancel()
-        }
-        
-        let d2 = data
-        
-        do {
-            let decoder = JSONDecoder()
-            let d = try decoder.decode(Errors.self, from: d2 ?? Data())
-            print(d)
-        } catch {
-            print("Data coding issue")
-            return
-        }
-    }
-    
-    task.resume()
-    
-    //        if count == 150 {
-    //            _ = queue.wait(timeout: DispatchTime.distantFuture)
-    //        }
 }
 
 var successfullyUploaded: Int = 0
