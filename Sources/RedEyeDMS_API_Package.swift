@@ -132,7 +132,7 @@ public class RedEyeNetworkManager {
         return body
     }
 
-    func uploadRequest(record: Record, apiToken: String) {
+    public func uploadRequest(record: Record, apiToken: String) {
         
         let parameters = buildParameters(record: record)
         
