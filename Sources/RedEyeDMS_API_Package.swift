@@ -89,7 +89,7 @@ public class RedEyeNetworkManager {
         }
     }
 
-    public func uploadNewFile(file: Record, apiToken: String) async -> [String] {
+    public func uploadNewFile(file: Record, apiToken: String) -> [String] {
         let boundary = "Boundary-\(UUID().uuidString)"
         let body = buildBody(fileMetadata: file, boundary: boundary)
         
