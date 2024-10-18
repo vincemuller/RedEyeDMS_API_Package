@@ -129,6 +129,7 @@ public class RedEyeNetworkManager {
             for x in d {
                 array.append(x.name)
             }
+            print(array)
             return array
         } catch {
             throw apiError.invalidData
