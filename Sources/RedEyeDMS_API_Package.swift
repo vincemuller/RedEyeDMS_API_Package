@@ -104,20 +104,22 @@ public class RedEyeNetworkManager {
         let session = URLSession(configuration: .ephemeral)
         let (data, response) = try await session.data(for: request)
 
+//        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+//            do {
+//                let decoder = JSONDecoder()
+//                let d = try decoder.decode(Errors.self, from: data)
+//                var errors: [String] = []
+//                for x in d.errors {
+//                    errors.append(x.error)
+//                }
+//                return errors
+//            } catch {
+//                return ["Data handling error"]
+//            }
+//        }
         
-        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-            do {
-                let decoder = JSONDecoder()
-                let d = try decoder.decode(Errors.self, from: data)
-                var errors: [String] = []
-                for x in d.errors {
-                    errors.append(x.error)
-                }
-                return errors
-            } catch {
-                return ["Data handling error"]
-            }
-        }
+        let r = response as? HTTPURLResponse
+        print(r?.statusCode)
         
         do {
             let decoder = JSONDecoder()
