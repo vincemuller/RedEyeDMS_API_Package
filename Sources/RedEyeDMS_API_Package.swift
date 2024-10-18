@@ -89,7 +89,7 @@ public class RedEyeNetworkManager {
         }
     }
 
-    public func uploadNewFile(file: Record, apiToken: String) async throws -> [String] {
+    public func uploadNewFile(file: Record, apiToken: String) async -> [String] {
         let boundary = "Boundary-\(UUID().uuidString)"
         let body = buildBody(fileMetadata: file, boundary: boundary)
         
@@ -98,42 +98,42 @@ public class RedEyeNetworkManager {
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         
         request.httpMethod = "POST"
-        request.httpBody = body
+//        request.httpBody = body
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         
         let session = URLSession(configuration: .ephemeral)
-        let (data, response) = try await session.data(for: request)
+        var task = URLSessionTask()
 
-//        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-//            do {
-//                let decoder = JSONDecoder()
-//                let d = try decoder.decode(Errors.self, from: data)
-//                var errors: [String] = []
-//                for x in d.errors {
-//                    errors.append(x.error)
+        task = session.uploadTask(with: request, from: body) { data, response, error in
+            
+            if var response = response as? HTTPURLResponse {
+                print("Response: \(response.statusCode)")
+                
+//                if response.statusCode == 200 {
+//                    successfullyUploaded += 1
 //                }
-//                return errors
-//            } catch {
-//                return ["Data handling error"]
-//            }
-//        }
-        
-        let r = response as? HTTPURLResponse
-        print(r?.statusCode)
-        
-        do {
-            let decoder = JSONDecoder()
-            //Need to build model for artefact data and add this model to this decoder.decode
-            let d = try decoder.decode(Errors.self, from: data)
-            var array: [String] = []
-            for x in d.errors {
-                array.append(x.error)
+                
+    //            if count == 150 {
+    //                queue.signal()
+    //            }
+    //            task.cancel()
+    //            session.invalidateAndCancel()
             }
-            print(array)
-            return array
-        } catch {
-            throw apiError.invalidData
+            
+            let d2 = data
+            
+            do {
+                let decoder = JSONDecoder()
+                let d = try decoder.decode(Errors.self, from: d2 ?? Data())
+                print(d.errors)
+            } catch {
+                print("Data coding issue")
+                return
+            }
         }
+        
+        task.resume()
+        return [""]
         
     }
     
